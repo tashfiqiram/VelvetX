@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VelvetX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8eeff 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .admin-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #44618E;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            box-shadow: 0 4px 15px rgba(68, 97, 142, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .admin-btn:hover {
+            background: #5a77a3;
+            transform: scale(1.1);
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(68, 97, 142, 0.15);
+            padding: 70px 50px;
+            text-align: center;
+        }
+
+        .login-container {
+            display: none;
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(68, 97, 142, 0.15);
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        .admin-panel {
+            display: none;
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(68, 97, 142, 0.15);
+            padding: 50px 40px;
+        }
+
+        .video-fullscreen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 2000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #44618E;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            z-index: 2001;
+        }
+
+        .back-btn:hover {
+            background: white;
+        }
+
+        video {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        h1 {
+            color: #44618E;
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            color: #44618E;
+            font-size: 2em;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .btn {
+            background: #44618E;
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            font-size: 1.15em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(68, 97, 142, 0.25);
+            text-decoration: none;
+            display: block;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: #5a77a3;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(68, 97, 142, 0.35);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #44618E 0%, #5a77a3 100%);
+            font-weight: 600;
+            padding: 22px 50px;
+            font-size: 1.25em;
+        }
+
+        .subtitle {
+            color: #7a8ba8;
+            font-size: 0.95em;
+            margin-top: 10px;
+        }
+
+        .btn-wrapper {
+            position: relative;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            color: #44618E;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e8eeff;
+            border-radius: 25px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #44618E;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .admin-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9ff;
+            border-radius: 20px;
+        }
+
+        .admin-section h3 {
+            color: #44618E;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            margin-top: 20px;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 12px 20px;
+            background: #44618E;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-label:hover {
+            background: #5a77a3;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            color: #7a8ba8;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .container {
+                padding: 40px 20px;
+            }
+
+            .btn {
+                font-size: 1em;
+                padding: 18px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="admin-btn" onclick="showLogin()">👤</button>
+
+    <div class="container" id="mainPage">
+        <h1>Welcome To VelvetX</h1>
+        
+        <div class="buttons-container">
+            <div class="btn-wrapper">
+                <a href="#" id="downloadLink" target="_blank" class="btn btn-primary">Download Our App</a>
+                <p class="subtitle">আয় শুরু করতে অ্যাপ ডাউনলোড করুন</p>
+            </div>
+            
+            <button class="btn" onclick="playVideo('howToDownload')">How To Download</button>
+            
+            <button class="btn" onclick="playVideo('howItWorks')">How It Works</button>
+        </div>
+    </div>
+
+    <div class="login-container" id="loginPage">
+        <h2>Admin Login</h2>
+        <form onsubmit="return login(event)">
+            <div class="form-group">
+                <label>Number</label>
+                <input type="text" id="loginNumber" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <div class="error" id="loginError">Invalid credentials</div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Login</button>
+            <button type="button" class="btn" style="width: 100%; margin-top: 10px;" onclick="showMain()">Back</button>
+        </form>
+    </div>
+
+    <div class="admin-panel" id="adminPanel">
+        <h2>Admin Panel</h2>
+        
+        <div class="admin-section">
+            <h3>Download Link</h3>
+            <div class="form-group">
+                <label>App Download URL</label>
+                <input type="url" id="downloadUrl" placeholder="Enter download link">
+            </div>
+            <button class="btn" onclick="saveDownloadLink()">Save Link</button>
+        </div>
+
+        <div class="admin-section">
+            <h3>How To Download Video</h3>
+            <div class="form-group">
+                <div class="file-input-wrapper">
+                    <label class="file-input-label" for="howToDownloadVideo">
+                        Choose Video File
+                    </label>
+                    <input type="file" id="howToDownloadVideo" accept="video/*" onchange="handleVideoUpload(this, 'howToDownload')">
+                </div>
+                <div class="file-name" id="howToDownloadFileName"></div>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h3>How It Works Video</h3>
+            <div class="form-group">
+                <div class="file-input-wrapper">
+                    <label class="file-input-label" for="howItWorksVideo">
+                        Choose Video File
+                    </label>
+                    <input type="file" id="howItWorksVideo" accept="video/*" onchange="handleVideoUpload(this, 'howItWorks')">
+                </div>
+                <div class="file-name" id="howItWorksFileName"></div>
+            </div>
+        </div>
+
+        <button class="btn logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="video-fullscreen" id="videoPlayer">
+        <button class="back-btn" onclick="closeVideo()">← Back</button>
+        <video id="videoElement" controls></video>
+    </div>
+
+    <script>
+        let videoData = {
+            howToDownload: null,
+            howItWorks: null
+        };
+
+        let downloadLink = 'https://www.mediafire.com/file/q2klxlimzr7ds4g/VelvetX_1.0.0.apk/file';
+
+        // Load saved data on page load
+        window.onload = function() {
+            const savedDownloadLink = localStorage.getItem('downloadLink');
+            const savedHowToDownload = localStorage.getItem('howToDownloadVideo');
+            const savedHowItWorks = localStorage.getItem('howItWorksVideo');
+
+            if (savedDownloadLink) {
+                downloadLink = savedDownloadLink;
+            }
+            document.getElementById('downloadLink').href = downloadLink;
+
+            if (savedHowToDownload) {
+                videoData.howToDownload = savedHowToDownload;
+            }
+            if (savedHowItWorks) {
+                videoData.howItWorks = savedHowItWorks;
+            }
+        };
+
+        function showLogin() {
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'block';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function showMain() {
+            document.getElementById('mainPage').style.display = 'block';
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        function login(event) {
+            event.preventDefault();
+            const number = document.getElementById('loginNumber').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (number === '2' && password === 'admin2') {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('downloadUrl').value = downloadLink;
+                return false;
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                return false;
+            }
+        }
+
+        function logout() {
+            document.getElementById('loginNumber').value = '';
+            document.getElementById('loginPassword').value = '';
+            showMain();
+        }
+
+        function saveDownloadLink() {
+            const url = document.getElementById('downloadUrl').value;
+            if (url) {
+                downloadLink = url;
+                localStorage.setItem('downloadLink', url);
+                document.getElementById('downloadLink').href = url;
+                alert('Download link saved successfully!');
+            } else {
+                alert('Please enter a valid URL');
+            }
+        }
+
+        function handleVideoUpload(input, type) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    videoData[type] = e.target.result;
+                    localStorage.setItem(type + 'Video', e.target.result);
+                    document.getElementById(type + 'FileName').textContent = 'Selected: ' + file.name;
+                    alert('Video uploaded successfully!');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function playVideo(type) {
+            if (videoData[type]) {
+                document.getElementById('mainPage').style.display = 'none';
+                document.getElementById('videoPlayer').style.display = 'flex';
+                const videoElement = document.getElementById('videoElement');
+                videoElement.src = videoData[type];
+                videoElement.play();
+            } else {
+                alert('No video available. Please contact admin.');
+            }
+        }
+
+        function closeVideo() {
+            const videoElement = document.getElementById('videoElement');
+            videoElement.pause();
+            videoElement.src = '';
+            document.getElementById('videoPlayer').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
